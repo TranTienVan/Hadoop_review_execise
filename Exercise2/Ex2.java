@@ -1,7 +1,7 @@
 package Exercise2;
 
 import java.io.IOException;
-import java.util.StringTokenizer;
+
 import java.util.*;
 
 import org.apache.hadoop.conf.Configuration;
@@ -13,7 +13,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.io.FloatWritable;
+
 
 public class Ex2 {
 
@@ -50,8 +50,8 @@ public class Ex2 {
     }
 
     public static class IntSumReducer
-            extends Reducer<Text, IntWritable, Text, FloatWritable> {
-        private FloatWritable result = new FloatWritable();
+            extends Reducer<Text, IntWritable, Text, Text> {
+        private Text result = new Text();
 
         public void reduce(Text key, Iterable<IntWritable> values,
                 Context context) throws IOException, InterruptedException {
@@ -62,8 +62,8 @@ public class Ex2 {
                 count += 1;
             }
             float average = (float)sum/count;
-
-            result.set(average);
+            String formattedString = String.format("%.3f", average);
+            result.set(formattedString);
             context.write(key, result);
         }
     }
@@ -76,7 +76,7 @@ public class Ex2 {
         job.setCombinerClass(IntSumReducer.class);
         job.setReducerClass(IntSumReducer.class);
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(FloatWritable.class);
+        job.setOutputValueClass(Text.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileInputFormat.addInputPath(job, new Path(args[1]));
         FileInputFormat.addInputPath(job, new Path(args[2]));
