@@ -33,9 +33,6 @@ public class Ex8 {
             String[] word_values = value.toString().split("\t")[1].split(" ");
             
             for (String w : word_values) {
-                
-    
-
                 if (counts.containsKey(word_key)) {
                     ArrayList<String> current = counts.get(word_key);
                     current.add(w);
