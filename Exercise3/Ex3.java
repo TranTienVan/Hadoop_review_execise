@@ -49,7 +49,7 @@ public class Ex3 {
             float current_count;
             for (Text val : values) {
                 try {
-                    current_count = Float.parseFloat(val.toString());
+                    current_count = Float.parseFloat(val.toString().replace(" ", ""));
                     if (current_count > max_count){
                         max_count = current_count;
                     }
