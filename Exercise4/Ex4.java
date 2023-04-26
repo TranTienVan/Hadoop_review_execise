@@ -37,7 +37,7 @@ public class Ex4 {
                 if (all_words.contains(w)) {
                     
                 } else {
-                    context.write(new Text("Hello"), new Text(word));
+                    context.write(new Text("Hello"), new Text(w));
                     // append the word to the list
                     all_words.add(w);
 
