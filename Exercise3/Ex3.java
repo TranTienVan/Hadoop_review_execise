@@ -54,13 +54,13 @@ public class Ex3 {
                 }
 
                 if (current_count < min_count){
-                    min_count = current_count;
+                    min_count = current_count;  
                 }
                 
             }
             
-            String formattedString = String.format("%.0f", max_count) + " " + String.format("%.0f", min_count);
-            result.set(formattedString);
+            // String formattedString = String.format("%.0f", max_count) + " " + String.format("%.0f", min_count);
+            result.set("hello");
             context.write(key, result);
         }
     }
