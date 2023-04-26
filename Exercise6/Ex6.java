@@ -43,7 +43,7 @@ public class Ex6 {
                 } else {
                     ArrayList<String> current = new ArrayList<String>();
                     current.add(word_key);
-                    counts.put(Integer.toString(w.length()), current);
+                    counts.put(w, current);
                 }
                 
             }
