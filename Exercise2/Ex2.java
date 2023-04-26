@@ -75,10 +75,8 @@ public class Ex2 {
         job.setCombinerClass(IntSumReducer.class);
         job.setReducerClass(IntSumReducer.class);
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(Text.class);
-        FileInputFormat.addInputPath(job, new Path(args[0]));
-        FileInputFormat.addInputPath(job, new Path(args[1]));
-        FileInputFormat.addInputPath(job, new Path(args[2]));
+        job.setOutputValueClass(IntWritable.class);
+        FileInputFormat.addInputPaths(job, args[0] + "," + args[1] + "," + args[2]);
         FileOutputFormat.setOutputPath(job, new Path(args[3]));
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
