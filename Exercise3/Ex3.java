@@ -46,9 +46,9 @@ public class Ex3 {
                 Context context) throws IOException, InterruptedException {
             float max_count = -2147483648;
             float min_count = 2147483647;
-            
+            float current_count;
             for (Text val : values) {
-                float current_count = Float.parseFloat(val.toString());
+                current_count = Float.parseFloat(val.toString());
                 if (current_count > max_count){
                     max_count = current_count;
                 }
