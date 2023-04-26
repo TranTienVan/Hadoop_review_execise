@@ -13,10 +13,10 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-
-
+import org.apache.log4j.Logger;
+import org.apache.log4j.BasicConfigurator;
 public class Ex2 {
-
+    private static final Logger logger = Logger.getLogger(Ex2.class);
     public static class TokenizerMapper
             extends Mapper<Object, Text, Text, IntWritable> {
 
@@ -40,7 +40,8 @@ public class Ex2 {
 
             // Print the word counts
             for (String word : wordCount.keySet()) {
-                System.out.println(word + " : " + wordCount.get(word));
+
+                logger.info(word + " : " + wordCount.get(word));
                 myword.set(word);
                 context.write(myword, new IntWritable(wordCount.get(word)));
             }
@@ -69,6 +70,7 @@ public class Ex2 {
     }
 
     public static void main(String[] args) throws Exception {
+        BasicConfigurator.configure();
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "word count");
         job.setJarByClass(Ex2.class);
