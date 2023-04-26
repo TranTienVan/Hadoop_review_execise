@@ -67,7 +67,7 @@ public class Ex3 {
                 
             }
             
-            String formattedString = String.format("%.0f", max_count) + " " + String.format("%.0f", min_count);
+            String formattedString = String.format("%.0f", max_count);
             result.set(formattedString);
             context.write(key, result);
         }
