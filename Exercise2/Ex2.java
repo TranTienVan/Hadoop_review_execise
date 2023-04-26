@@ -44,10 +44,10 @@ public class Ex2 {
 
         public void reduce(Text key, Iterable<Text> values,
                 Context context) throws IOException, InterruptedException {
-            int sum = 0;
-            int count = 0;
+            float sum = 0;
+            float count = 0;
             for (Text val : values) {
-                sum += Integer.parseInt(val.toString());
+                sum += Float.parseFloat(val.toString());
                 count += 1;
             }
             float average = (float)sum/count;
