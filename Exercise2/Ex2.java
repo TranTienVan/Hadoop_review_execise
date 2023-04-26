@@ -6,7 +6,6 @@ import java.util.*;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -17,7 +16,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class Ex2 {
 
-    public static class TokenizerMapper extends Mapper<Object, Text, Text, IntWritable> {
+    public static class TokenizerMapper extends Mapper<Object, Text, Text, Text> {
         private Text word = new Text();
         
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
@@ -34,21 +33,21 @@ public class Ex2 {
             
             for (Map.Entry<String, Integer> entry : counts.entrySet()) {
                 word.set(entry.getKey());
-                context.write(word, new IntWritable(entry.getValue()));
+                context.write(word, new Text(entry.getValue().toString()));
             }
         }
     }
 
     public static class IntSumReducer
-            extends Reducer<Text, IntWritable, Text, Text> {
+            extends Reducer<Text, Text, Text, Text> {
         private Text result = new Text();
 
-        public void reduce(Text key, Iterable<IntWritable> values,
+        public void reduce(Text key, Iterable<Text> values,
                 Context context) throws IOException, InterruptedException {
             int sum = 0;
             int count = 0;
-            for (IntWritable val : values) {
-                sum += val.get();
+            for (Text val : values) {
+                sum += Integer.parseInt(val.toString());
                 count += 1;
             }
             float average = (float)sum/count;
@@ -65,8 +64,6 @@ public class Ex2 {
         job.setMapperClass(TokenizerMapper.class);
         job.setCombinerClass(IntSumReducer.class);
         job.setReducerClass(IntSumReducer.class);
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(IntWritable.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
         FileInputFormat.addInputPaths(job, args[0] + "," + args[1] + "," + args[2]);
