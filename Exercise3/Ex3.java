@@ -47,24 +47,24 @@ public class Ex3 {
             float max_count = -2147483648;
             float min_count = 2147483647;
             float current_count;
-            for (Text val : values) {
-                try {
-                    current_count = Float.parseFloat(val.toString().replace(" ", ""));
-                    if (current_count > max_count){
-                        max_count = current_count;
-                    }
+            // for (Text val : values) {
+            //     try {
+            //         current_count = Float.parseFloat(val.toString().replace(" ", ""));
+            //         if (current_count > max_count){
+            //             max_count = current_count;
+            //         }
 
-                    if (current_count < min_count){
-                        min_count = current_count;  
-                    }
-                    // code that might throw an exception
-                } catch (Exception e) {
-                    // code to handle the exception
-                }
-            }
+            //         if (current_count < min_count){
+            //             min_count = current_count;  
+            //         }
+            //         // code that might throw an exception
+            //     } catch (Exception e) {
+            //         // code to handle the exception
+            //     }
+            // }
             
-            String formattedString = String.format("%.0f", max_count) + " " + String.format("%.0f", min_count);
-            result.set(formattedString);
+            // String formattedString = String.format("%.0f", max_count) + " " + String.format("%.0f", min_count);
+            result.set("Hello");
             context.write(key, result);
         }
     }
