@@ -32,7 +32,7 @@ public class Ex3 {
             }
             
             for (Map.Entry<String, Integer> entry : counts.entrySet()) {
-                word.set(entry.getKey());
+                word.set(entry.getKey() + "_value");
                 context.write(word, new Text(entry.getValue().toString()));
             }
         }
@@ -48,25 +48,25 @@ public class Ex3 {
             float min_count = 2147483647;
             float current_count;
             for (Text val : values) {
-                // try {
-                //     current_count = Float.parseFloat(val.toString().replace(" ", ""));
-                //     if (current_count > max_count){
-                //         max_count = current_count;
-                //     }
+                try {
+                    current_count = Float.parseFloat(val.toString().replace(" ", ""));
+                    if (current_count > max_count){
+                        max_count = current_count;
+                    }
 
-                //     if (current_count < min_count){
-                //         min_count = current_count;  
-                //     }
-                //     // code that might throw an exception
-                // } catch (Exception e) {
-                //     // code to handle the exception
-                // }
-                context.write(key, new Text(val));
+                    if (current_count < min_count){
+                        min_count = current_count;  
+                    }
+                    // code that might throw an exception
+                } catch (Exception e) {
+                    // code to handle the exception
+                }
+                
             }
             
-            // String formattedString = String.format("%.0f", max_count) + " " + String.format("%.0f", min_count);
-            result.set("Hello");
-            context.write(key, result);
+            String formattedString = String.format("%.0f", max_count) + " " + String.format("%.0f", min_count);
+            result.set(formattedString);
+            context.write(new Text(key.toString().replace("_value", "")), result);
         }
     }
 
