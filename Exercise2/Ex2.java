@@ -17,34 +17,25 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class Ex2 {
 
-    public static class TokenizerMapper
-            extends Mapper<Object, Text, Text, IntWritable> {
-
-        private Text myword = new Text();
-
-        public void map(Object key, Text value, Context context) throws IOException, InterruptedException {            
-            // Split the sentence into words
+    public static class TokenizerMapper extends Mapper<Object, Text, Text, IntWritable> {
+        private Text word = new Text();
+        
+        public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             String[] words = value.toString().split(" ");
-
-           // Create a Map to store the counts
-            Map<String, Integer> wordCount = new HashMap<>();
-
-            // Iterate over the words and update the counts
-            for (String word : words) {
-                if (wordCount.containsKey(word)) {
-                    wordCount.put(word, wordCount.get(word) + 1);
+            Map<String, Integer> counts = new HashMap<>();
+            
+            for (String w : words) {
+                if (counts.containsKey(w)) {
+                    counts.put(w, counts.get(w) + 1);
                 } else {
-                    wordCount.put(word, 1);
+                    counts.put(w, 1);
                 }
             }
-
-            // Print the word counts
-            for (Map.Entry<String, Integer> entry : wordCount.entrySet()) {
-                myword.set(entry.getKey());
-                context.write(myword, new IntWritable(entry.getValue()));
+            
+            for (Map.Entry<String, Integer> entry : counts.entrySet()) {
+                word.set(entry.getKey());
+                context.write(word, new IntWritable(entry.getValue()));
             }
-
-
         }
     }
 
@@ -69,7 +60,7 @@ public class Ex2 {
 
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
-        Job job = Job.getInstance(conf, "word count");
+        Job job = Job.getInstance(conf, "word count2");
         job.setJarByClass(Ex2.class);
         job.setMapperClass(TokenizerMapper.class);
         job.setCombinerClass(IntSumReducer.class);
