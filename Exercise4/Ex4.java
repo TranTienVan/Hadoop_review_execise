@@ -18,24 +18,48 @@ public class Ex4 {
 
     public static class TokenizerMapper extends Mapper<Object, Text, Text, Text> {
         private Text word = new Text();
-        private Text word_value = new Text("1");
-        List<String> stringList = new ArrayList<>();
+        private Text word_value = new Text();
+        
+        private ArrayList<String> all_words;
+        private Map<String, Integer> counts; 
+
+        @Override
+        protected void setup(Context context) throws IOException, InterruptedException {
+            all_words = new ArrayList<String>();
+            counts = new HashMap<>();
+        }
+        
+        @Override
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             String[] words = value.toString().split(" ");
             
             for (String w : words) {
-                // check if the word is already in the list
-                if (stringList.contains(w)) {
+                if (all_words.contains(w)) {
                     
                 } else {
                     // append the word to the list
-                    stringList.add(w);
-                    word.set(Integer.toString(w.length()));
-                    context.write(word, word_value);    
+                    all_words.add(w);
+
+                    if (counts.containsKey(Integer.toString(w.length()))) {
+                        counts.put(Integer.toString(w.length()), counts.get(w) + 1);
+                    } else {
+                        counts.put(Integer.toString(w.length()), 1);
+                    }
                 }
-                
             }
             
+        }
+
+
+
+        @Override
+        protected void cleanup(Context context) throws IOException, InterruptedException {
+            // Output the graph
+            for (Map.Entry<String, Integer> entry : counts.entrySet()) {
+                word.set(entry.getKey());
+                word_value.set(entry.getValue().toString());
+                context.write(word, word_value);
+            }
         }
     }
 
@@ -45,22 +69,13 @@ public class Ex4 {
         private Text result = new Text();      
         public void reduce(Text key, Iterable<Text> values,
                 Context context) throws IOException, InterruptedException {
-            float sum = 0, current_count;
-            for (Text val : values) {
-                try {
-                    current_count = Float.parseFloat(val.toString().split(" ")[0]);
-                    sum += current_count;
-                    // code that might throw an exception
-                } catch (Exception e) {
-                    // code to handle the exception
-                }
-                
-                    
-                
+
+            for (Text calculated_value : values) {
+                result.set(calculated_value);
+                break;
             }
-            
-            String formattedString = String.format("%.0f", sum);
-            result.set(formattedString);
+
+            // Emit the key vertex and its list of adjacent vertices
             context.write(key, result);
         }
     }
