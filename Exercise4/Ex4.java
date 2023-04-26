@@ -19,12 +19,21 @@ public class Ex4 {
     public static class TokenizerMapper extends Mapper<Object, Text, Text, Text> {
         private Text word = new Text();
         private Text word_value = new Text("1");
+        List<String> stringList = new ArrayList<>();
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             String[] words = value.toString().split(" ");
             
             for (String w : words) {
-                word.set(Integer.toString(w.length()));
-                context.write(word, word_value);
+                // check if the word is already in the list
+                if (stringList.contains(w)) {
+                    
+                } else {
+                    // append the word to the list
+                    stringList.add(w);
+                    word.set(Integer.toString(w.length()));
+                    context.write(word, word_value);    
+                }
+                
             }
             
         }
