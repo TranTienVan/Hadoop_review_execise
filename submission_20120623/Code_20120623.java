@@ -12,7 +12,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-
+import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 
 public class Code_20120623 {
 
@@ -30,7 +30,9 @@ public class Code_20120623 {
         @Override
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             String word_key = value.toString();
-
+            
+            FileSplit fileSplit = (FileSplit)context.getInputSplit();
+            String filename = fileSplit.getPath().getName();
             // if (word_key.contains("id") && !word_key.contains("")){
             //     ArrayList<String> current = new ArrayList<String>();
             //     counts.put(word_key, current);
@@ -49,7 +51,7 @@ public class Code_20120623 {
             //     }
                 
             // }
-            context.write(new Text(word_key), new Text(""));
+            context.write(new Text(word_key), new Text(filename));
             
         }
 
