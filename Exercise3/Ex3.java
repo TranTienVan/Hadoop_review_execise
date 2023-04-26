@@ -32,7 +32,7 @@ public class Ex3 {
             }
             
             for (Map.Entry<String, Integer> entry : counts.entrySet()) {
-                word.set(entry.getKey() + "_value");
+                word.set(entry.getKey());
                 context.write(word, new Text(entry.getValue().toString()));
             }
         }
@@ -40,34 +40,26 @@ public class Ex3 {
 
     public static class IntSumReducer
             extends Reducer<Text, Text, Text, Text> {
-        private Text result = new Text();
-
         public void reduce(Text key, Iterable<Text> values,
                 Context context) throws IOException, InterruptedException {
             float max_count = -2147483648;
             float min_count = 2147483647;
             float current_count;
             for (Text val : values) {
-                context.write(key, val);
-                try {
-                    current_count = Float.parseFloat(val.toString().replace(" ", ""));
-                    if (current_count > max_count){
-                        max_count = current_count;
-                    }
-
-                    if (current_count < min_count){
-                        min_count = current_count;  
-                    }
-                    // code that might throw an exception
-                } catch (Exception e) {
-                    // code to handle the exception
+                current_count = Float.parseFloat(val.toString().replace(" ", ""));
+                if (current_count > max_count){
+                    max_count = current_count;
                 }
+
+                if (current_count < min_count){
+                    min_count = current_count;  
+                }
+                    
                 
             }
             
             String formattedString = String.format("%.0f", max_count) + " " + String.format("%.0f", min_count);
-            result.set(formattedString);
-            context.write(new Text(key.toString().replace("_value", "")), result);
+            context.write(new Text(key.toString() + " " + formattedString), new Text("1.0"));
         }
     }
 
