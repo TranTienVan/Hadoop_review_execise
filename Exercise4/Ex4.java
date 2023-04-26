@@ -41,7 +41,7 @@ public class Ex4 {
                     all_words.add(w);
 
                     if (counts.containsKey(Integer.toString(w.length()))) {
-                        counts.put(Integer.toString(w.length()), counts.get(w) + 1);
+                        counts.put(Integer.toString(w.length()), counts.get(Integer.toString(w.length())) + 1);
                     } else {
                         counts.put(Integer.toString(w.length()), 1);
                     }
