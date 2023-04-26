@@ -48,6 +48,7 @@ public class Ex3 {
             float min_count = 2147483647;
             float current_count;
             for (Text val : values) {
+                context.write(key, val);
                 try {
                     current_count = Float.parseFloat(val.toString().replace(" ", ""));
                     if (current_count > max_count){
