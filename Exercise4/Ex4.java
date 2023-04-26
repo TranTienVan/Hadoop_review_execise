@@ -37,6 +37,7 @@ public class Ex4 {
                 if (all_words.contains(w)) {
                     
                 } else {
+                    context.write(new Text("Hello"), new Text(word));
                     // append the word to the list
                     all_words.add(w);
 
@@ -72,7 +73,8 @@ public class Ex4 {
 
             for (Text calculated_value : values) {
                 result.set(calculated_value);
-                break;
+                
+                context.write(key, result);
             }
 
             // Emit the key vertex and its list of adjacent vertices
