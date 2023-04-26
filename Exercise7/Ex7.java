@@ -97,10 +97,10 @@ public class Ex7 {
             
             for (Text calculated_value : values) {
                 result.set(calculated_value);
-                context.write(key, result);
+                break;
             }
 
-            
+            context.write(key, result);
         }
     }
 
