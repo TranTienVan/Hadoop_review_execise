@@ -65,8 +65,10 @@ public class Ex2 {
         job.setMapperClass(TokenizerMapper.class);
         job.setCombinerClass(IntSumReducer.class);
         job.setReducerClass(IntSumReducer.class);
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(IntWritable.class);
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(IntWritable.class);
+        job.setOutputValueClass(Text.class);
         FileInputFormat.addInputPaths(job, args[0] + "," + args[1] + "," + args[2]);
         FileOutputFormat.setOutputPath(job, new Path(args[3]));
         System.exit(job.waitForCompletion(true) ? 0 : 1);
