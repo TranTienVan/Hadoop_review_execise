@@ -1,4 +1,4 @@
-package Exercise4;
+package Exercise6;
 
 import java.io.IOException;
 
@@ -14,38 +14,38 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 
-public class Ex4 {
+public class Ex6 {
 
     public static class TokenizerMapper extends Mapper<Object, Text, Text, Text> {
         private Text word = new Text();
         private Text word_value = new Text();
         
-        private ArrayList<String> all_words;
-        private Map<String, Integer> counts; 
+        private Map<String, ArrayList<String>> counts; 
 
         @Override
         protected void setup(Context context) throws IOException, InterruptedException {
-            all_words = new ArrayList<String>();
             counts = new HashMap<>();
         }
         
         @Override
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-            String[] words = value.toString().split(" ");
+            String word_key = value.toString().split("\t")[0];
+            String[] word_values = value.toString().split("\t")[1].split(" ");
             
-            for (String w : words) {
-                if (all_words.contains(w)) {
-                    
-                } else {
-                    // append the word to the list
-                    all_words.add(w);
+            for (String w : word_values) {
+                
+    
 
-                    if (counts.containsKey(Integer.toString(w.length()))) {
-                        counts.put(Integer.toString(w.length()), counts.get(Integer.toString(w.length())) + 1);
-                    } else {
-                        counts.put(Integer.toString(w.length()), 1);
-                    }
+                if (counts.containsKey(w)) {
+                    ArrayList<String> current = counts.get(w);
+                    current.add(word_key);
+                    counts.put(w, current);
+                } else {
+                    ArrayList<String> current = new ArrayList<String>();
+                    current.add(word_key);
+                    counts.put(Integer.toString(w.length()), current);
                 }
+                
             }
             
         }
@@ -55,10 +55,14 @@ public class Ex4 {
         @Override
         protected void cleanup(Context context) throws IOException, InterruptedException {
             // Output the graph
-            for (Map.Entry<String, Integer> entry : counts.entrySet()) {
-                word.set(entry.getKey());
-                word_value.set(entry.getValue().toString());
-                context.write(word, word_value);
+            for (Map.Entry<String, ArrayList<String>> entry : counts.entrySet()) {
+                HashSet<String> myHashSet = new HashSet<String>(entry.getValue());
+                for (String element : myHashSet) {
+                    word.set(entry.getKey());
+                    word_value.set(element);
+                    context.write(word, word_value);
+                }
+                
             }
         }
     }
@@ -69,14 +73,15 @@ public class Ex4 {
         private Text result = new Text();      
         public void reduce(Text key, Iterable<Text> values,
                 Context context) throws IOException, InterruptedException {
+            
 
+            float count = 0;
             for (Text calculated_value : values) {
-                result.set(calculated_value);
-                
-                context.write(key, result);
+                count += 1;
             }
 
-            // Emit the key vertex and its list of adjacent vertices
+            String formattedString = String.format("%.0f", count);
+            result.set(formattedString);
             context.write(key, result);
         }
     }
@@ -84,7 +89,7 @@ public class Ex4 {
     public static void main(String[] args) throws Exception {
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf, "word count3");
-        job.setJarByClass(Ex4.class);
+        job.setJarByClass(Ex6.class);
         job.setMapperClass(TokenizerMapper.class);
         job.setCombinerClass(IntSumReducer.class);
         job.setReducerClass(IntSumReducer.class);
