@@ -18,7 +18,7 @@ public class Ex3 {
 
     public static class TokenizerMapper extends Mapper<Object, Text, Text, Text> {
         private Text word = new Text();
-        
+        private Text word_value = new Text();
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             String[] words = value.toString().split(" ");
             Map<String, Integer> counts = new HashMap<>();
@@ -33,13 +33,16 @@ public class Ex3 {
             
             for (Map.Entry<String, Integer> entry : counts.entrySet()) {
                 word.set(entry.getKey());
-                context.write(word, new Text(entry.getValue().toString()));
+                word_value.set(entry.getValue().toString());
+                context.write(word, word_value);
             }
         }
     }
 
     public static class IntSumReducer
             extends Reducer<Text, Text, Text, Text> {
+        
+        private Text result = new Text();      
         public void reduce(Text key, Iterable<Text> values,
                 Context context) throws IOException, InterruptedException {
             float max_count = -2147483648;
@@ -59,7 +62,8 @@ public class Ex3 {
             }
             
             String formattedString = String.format("%.0f", max_count) + " " + String.format("%.0f", min_count);
-            context.write(new Text(key.toString() + " " + formattedString), new Text("1.0"));
+            result.set(formattedString);
+            context.write(key, result);
         }
     }
 
